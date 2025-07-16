@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .modal-dialog {
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Service Tracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Dashboard <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#service-form-modal">Add Service</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Services</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Total number of services</h6>
+                        <p class="card-text" id="total-services">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Services</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Number of pending services</h6>
+                        <p class="card-text" id="pending-services">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Completed Services</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Number of completed services</h6>
+                        <p class="card-text" id="completed-services">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Service Status Chart</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Chart of service status</h6>
+                        <canvas id="service-status-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Service Type Chart</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Chart of service types</h6>
+                        <canvas id="service-type-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Latest Services</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Table of latest services</h6>
+                        <input type="search" class="form-control" id="search-input" placeholder="Search services">
+                        <table class="table table-striped mt-3" id="latest-services-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <th>Contact Number</th>
+                                    <th>EV Type</th>
+                                    <th>Ticket No</th>
+                                    <th>Service Complaint Date</th>
+                                    <th>Action Taken / Remark</th>
+                                    <th>Vehicle Delivery Date</th>
+                                    <th>Amt Received</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="latest-services-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="service-form-modal" tabindex="-1" role="dialog" aria-labelledby="serviceFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="serviceFormModalLabel">Add Service</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="service-form">
+                        <div class="form-group">
+                            <label for="customer-name">Customer Name:</label>
+                            <input type="text" class="form-control" id="customer-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-number">Contact Number:</label>
+                            <input type="text" class="form-control" id="contact-number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ev-type">EV Type:</label>
+                            <select class="form-control" id="ev-type" required>
+                                <option value="">Select EV Type</option>
+                                <option value="2 Wheeler Scooty">2 Wheeler Scooty</option>
+                                <option value="2 Wheeler Loader">2 Wheeler Loader</option>
+                                <option value="3 Wheeler Loader">3 Wheeler Loader</option>
+                                <option value="3 Wheeler Scooty">3 Wheeler Scooty</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ticket-no">Ticket No:</label>
+                            <input type="text" class="form-control" id="ticket-no" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-complaint-date">Service Complaint Date:</label>
+                            <input type="date" class="form-control" id="service-complaint-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="action-taken">Action Taken / Remark:</label>
+                            <textarea class="form-control" id="action-taken" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-delivery-date">Vehicle Delivery Date:</label>
+                            <input type="date" class="form-control" id="vehicle-delivery-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="amt-received">Amt Received:</label>
+                            <input type="number" class="form-control" id="amt-received" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status:</label>
+                            <select class="form-control" id="status" required>
+                                <option value="">Select Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="service-details-modal" tabindex="-1" role="dialog" aria-labelledby="serviceDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="serviceDetailsModalLabel">Service Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="service-details-modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script>
+        let services = [];
+
+        $('#service-form').submit(function(e) {
+            e.preventDefault();
+            let customerName = $('#customer-name').val();
+            let contactNumber = $('#contact-number').val();
+            let evType = $('#ev-type').val();
+            let ticketNo = $('#ticket-no').val();
+            let serviceComplaintDate = $('#service-complaint-date').val();
+            let actionTaken = $('#action-taken').val();
+            let vehicleDeliveryDate = $('#vehicle-delivery-date').val();
+            let amtReceived = $('#amt-received').val();
+            let status = $('#status').val();
+
+            let service = {
+                customerName: customerName,
+                contactNumber: contactNumber,
+                evType: evType,
+                ticketNo: ticketNo,
+                serviceComplaintDate: serviceComplaintDate,
+                actionTaken: actionTaken,
+                vehicleDeliveryDate: vehicleDeliveryDate,
+                amtReceived: amtReceived,
+                status: status
+            };
+
+            services.push(service);
+            updateServiceTable();
+            updateDashboard();
+            $('#service-form')[0].reset();
+            $('#service-form-modal').modal('hide');
+        });
+
+        function updateServiceTable() {
+            let tableBody = '';
+            services.forEach((service, index) => {
+                tableBody += `
+                    <tr>
+                        <td>${service.customerName}</td>
+                        <td>${service.contactNumber}</td>
+                        <td>${service.evType}</td>
+                        <td>${service.ticketNo}</td>
+                        <td>${service.serviceComplaintDate}</td>
+                        <td>${service.actionTaken}</td>
+                        <td>${service.vehicleDeliveryDate}</td>
+                        <td>${service.amtReceived}</td>
+                        <td>${service.status}</td>
+                        <td><button class="btn btn-primary" onclick="viewServiceDetails(${index})">View Details</button></td>
+                    </tr>
+                `;
+            });
+            $('#latest-services-table-body').html(tableBody);
+        }
+
+        function updateDashboard() {
+            let totalServices = services.length;
+            let pendingServices = services.filter(service => service.status === 'Pending').length;
+            let completedServices = services.filter(service => service.status === 'Completed').length;
+
+            $('#total-services').text(totalServices);
+            $('#pending-services').text(pendingServices);
+            $('#completed-services').text(completedServices);
+
+            let serviceStatusChart = document.getElementById('service-status-chart').getContext('2d');
+            let serviceStatusChartData = {
+                labels: ['Pending', 'In Progress', 'Completed'],
+                datasets: [{
+                    label: 'Service Status',
+                    data: [
+                        services.filter(service => service.status === 'Pending').length,
+                        services.filter(service => service.status === 'In Progress').length,
+                        services.filter(service => service.status === 'Completed').length
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            let serviceStatusChartOptions = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            };
+            new Chart(serviceStatusChart, {
+                type: 'bar',
+                data: serviceStatusChartData,
+                options: serviceStatusChartOptions
+            });
+
+            let serviceTypeChart = document.getElementById('service-type-chart').getContext('2d');
+            let serviceTypeChartData = {
+                labels: ['2 Wheeler Scooty', '2 Wheeler Loader', '3 Wheeler Loader', '3 Wheeler Scooty'],
+                datasets: [{
+                    label: 'Service Type',
+                    data: [
+                        services.filter(service => service.evType === '2 Wheeler Scooty').length,
+                        services.filter(service => service.evType === '2 Wheeler Loader').length,
+                        services.filter(service => service.evType === '3 Wheeler Loader').length,
+                        services.filter(service => service.evType === '3 Wheeler Scooty').length
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            let serviceTypeChartOptions = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            };
+            new Chart(serviceTypeChart, {
+                type: 'bar',
+                data: serviceTypeChartData,
+                options: serviceTypeChartOptions
+            });
+        }
+
+        function viewServiceDetails(index) {
+            let service = services[index];
+            let serviceDetails = `
+                <p>Customer Name: ${service.customerName}</p>
+                <p>Contact Number: ${service.contactNumber}</p>
+                <p>EV Type: ${service.evType}</p>
+                <p>Ticket No: ${service.ticketNo}</p>
+                <p>Service Complaint Date: ${service.serviceComplaintDate}</p>
+                <p>Action Taken / Remark: ${service.actionTaken}</p>
+                <p>Vehicle Delivery Date: ${service.vehicleDeliveryDate}</p>
+                <p>Amt Received: ${service.amtReceived}</p>
+                <p>Status: ${service.status}</p>
+            `;
+            $('#service-details-modal-body').html(serviceDetails);
+            $('#service-details-modal').modal('show');
+        }
+
+        $('#search-input').on('input', function() {
+            let searchQuery = $(this).val().toLowerCase();
+            let tableRows = $('#latest-services-table-body tr');
+            tableRows.each(function() {
+                let rowText = $(this).text().toLowerCase();
+                if (rowText.indexOf(searchQuery) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+    </script>
